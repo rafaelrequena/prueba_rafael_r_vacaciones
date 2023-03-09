@@ -1,0 +1,90 @@
+<odoo>
+  <data>
+    <menuitem
+      id="emp_holidays_menu"
+      name="Holidays Leave"
+      web_icon="hr_holidays_extension,static/description/icon.png"
+      sequence="1"/>
+
+    <record id="emp_holidays_view_form" model="ir.ui.view">
+      <field name="name">hr.employee.holidays.leave.view.form</field>
+      <field name="model">hr.employee.holidays.leave</field>
+      <field name="arch" type="xml">
+        <form string="Vacations Request">
+            <header>
+              <button name="approved_request" string="Approved" type="object" class="oe_highlight" groups="hr.group_hr_manager" states="unresolved"/>
+              <button name="rejected_request" string="Rejected" type="object" class="oe_highlight" groups="hr.group_hr_manager" states="unresolved"/>
+              <field name="state" widget="statusbar" statusbar_visible="unresolved,approved,rejected"/>
+          </header>
+          <sheet>
+            <group name="vacations_request">
+                <field name="employee_id" attrs="{'readonly': [('state','not in',('unresolved'))]}" />
+                <field name="date_start"  attrs="{'readonly': [('state','not in',('unresolved'))]}" />
+                <field name="date_end"  attrs="{'readonly': [('state','not in',('unresolved'))]}" />
+                <field name="user_approved_id" invisible="1" force_save="1" readonly="1" groups="hr.group_hr_manager"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="emp_holidays_view_tree" model="ir.ui.view">
+      <field name="name">hr.employee.holidays.leave.view.tree</field>
+      <field name="model">hr.employee.holidays.leave</field>
+      <field name="arch" type="xml">
+        <tree string="Vacations Request">
+          <field name="employee_id"/>
+          <field name="date_start"/>
+          <field name="date_end"/>
+          <field name="state"/>
+          <field name="user_approved_id" readonly="1" />
+        </tree>
+      </field>
+    </record>
+
+    <record id="emp_holidays_action" model="ir.actions.act_window">
+      <field name="name">Vacations Request</field>
+      <field name="res_model">hr.employee.holidays.leave</field>
+      <field name="view_mode">tree,form</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+    </record>
+
+    <menuitem
+      id="emp_holidays_sub_menu"
+      name="Employee Vacations Request"
+      parent="hr_holidays_extension.emp_holidays_menu"
+      sequence="1"/>
+
+    <menuitem
+          id="emp_holidays_employee_sub_menu"
+          name="Vacations Request Employee"
+          action="emp_holidays_action"
+          parent="hr_holidays_extension.emp_holidays_menu"
+          sequence="2"/>
+
+      <record id="emp_holidays_manager_action" model="ir.actions.act_window">
+        <field name="name">Vacations Request</field>
+        <field name="res_model">hr.employee.holidays.leave</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state','=','unresolved')]</field>
+        <field name="context">{}</field>
+      </record>
+
+      <menuitem
+          id="emp_holidays_manager_sub_menu"
+          name="Vacations Request Manager"
+          parent="hr_holidays_extension.emp_holidays_menu"
+          sequence="2"/>
+
+      <menuitem
+        id="emp_holidays_sub_menu"
+        name="Manager Vacations Request"
+        groups="hr.group_hr_manager"
+        action="emp_holidays_manager_action"
+        parent="hr_holidays_extension.emp_holidays_manager_sub_menu"
+        sequence="1"/>
+
+
+  </data>
+</odoo>
